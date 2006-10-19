@@ -1,26 +1,29 @@
 #define _GNU_SOURCE
 #define _ISOC99_SOURCE
-#include "hdfdump.h"
-/* my useful macros for debuging */ 
-#include "my_debug.h"
-/* ------------------------------ */ 
 
-/* for parsing command line options */
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <argp.h>
-/* -------------------------------- */
 
+#include "hdfdump.h"
 
-
-const char *argp_program_version =
-"hdfdump 1.0";
-const char *argp_program_bug_address =
-"<anton@modis.ru>";
+const char *argp_program_version = PACKAGE_STRING;
+const char *argp_program_bug_address = PACKAGE_BUGREPORT;
 
 /* Program documentation. */
 static char doc[] = "Dump an SDS or an attribute of the HDF file";
 /* A description of the arguments we accept. */
 static char args_doc[] = ("[OPTION] FILE SDS\n"
 			  "[OPTION] FILE SDS:ATTRIBUTE");
+
+/* Useful macros */
+#define CASS(x, y) ((x) = (typeof (x))(y))
+#define MALLOC_VAR(x)     (CASS ((x), malloc             (sizeof (*(x)))))
+#define MALLOC_ARY(x, y)  (CASS ((x), malloc       ((y) * sizeof (*(x)))))
+#define CALLOC_ARY(x, y)  (CASS ((x), calloc       ((y),  sizeof (*(x)))))
+#define REALLOC_ARY(x, y) (CASS ((x), realloc ((x), (y) * sizeof (*(x)))))
 
 /* Keys for options without short-options. */
 /* ---- */
@@ -129,19 +132,23 @@ parse_opt (int key, char *arg, struct argp_state *state)
 	}
       }
     } else if(arguments->indexs == NULL){
-      arguments->indexs = strdup(arg);
-    }else {
+      arguments->indexs = arg;
+    } else {
       argp_error (state, "too many non-option arguments given");
       return EINVAL;
     }
-    
     break;
+
   case ARGP_KEY_END:
-    if(arguments->sds_name == NULL && arguments->attribute_name == NULL){
-      argp_error (state, "not enough non-option arguments given");
+    if (arguments->input_file == NULL) {
+      argp_error (state, "no file name given");
+      return EINVAL;
+    } else if (arguments->sds_name == NULL) {
+      argp_error (state, "no SDS name given");
       return EINVAL;
     }
-    
+    break;
+
   default:
     return ARGP_ERR_UNKNOWN;
   }
@@ -155,17 +162,7 @@ int main (int argc, char *argv[])
 {
   struct arguments arguments;
   int ncid;
-  int varid;
-  int data_len;
   int i;
-  void *Ptr;
-  void *dump, *fill_value;
-  char sds_name[MAX_NC_NAME];
-  nc_type data_type;
-  int ndims, dimids[MAX_VAR_DIMS], natts;
-  int **indexs, *indexs_dim;
-  char *tmp;
-  long long_tmp;
   double add_offset,  scale_factor;
   
   /* Default values.                  */
@@ -198,70 +195,106 @@ int main (int argc, char *argv[])
   /*   dumpf(arguments.scale_factor); */
   /*   dumpi(arguments.shape); */
   /* ---------------------------------*/
-  
-  ncid = ncopen(arguments.input_file, NC_NOWRITE);
 
-  if(arguments.attribute_name != NULL){
+  ncid = ncopen (arguments.input_file, NC_NOWRITE);
+  if (ncid < 0) {
+    error (1, 0, "%s: Failed to open",
+           arguments.input_file);
+  }
+
+  if (arguments.attribute_name != NULL) {
+    const char
+      *sds_name = arguments.sds_name,
+      *attribute_name = arguments.attribute_name;
+    int varid;
+    nc_type data_type;
+    int data_len;
+
     if(arguments.output_type == OUTTYPE_DEFAULT) 
       arguments.output_type = OUTTYPE_TEXT;
     
-    if(arguments.sds_name != NULL)
-      varid = ncvarid (ncid, arguments.sds_name);
-    else 
+    if (arguments.sds_name == NULL) {
       varid = NC_GLOBAL;
+    } else if ((varid = ncvarid (ncid, sds_name)) < 0) {
+      error (1, 0, "%s: No such SDS in file", sds_name);
+    }
     
-    ncattinq(ncid, varid, arguments.attribute_name, &data_type, &data_len);
+    ncattinq (ncid, varid, attribute_name, &data_type, &data_len);
     if(arguments.shape)
       printf("%d\n", data_len);
     else if(arguments.info) {
-      hdf_print_attribute_info(ncid, varid, arguments.attribute_name, 0);
+      hdf_print_attribute_info (ncid, varid, attribute_name, 0);
     } else {
-      Ptr = hdf_memory_allocate(data_type, data_len);
-      ncattget(ncid, varid, arguments.attribute_name, Ptr);
-      hdf_dump_array(Ptr, data_type, data_len, arguments.multiply, arguments.output_type,
-		     add_offset, scale_factor, NULL);
+      void *data;
+      int elt_sz;
+
+      if ((elt_sz = nctypelen (data_type)) == -1) {
+        error (1, 0, "%d: Unknown HDF data type", (int)data_type);
+      }
+      /* allocate memory */
+      if ((data = malloc (elt_sz * data_len)) == 0) {
+        error (1, errno, "Failed to allocate memory");
+      }
+      ncattget (ncid, varid, attribute_name, data);
+      hdf_dump_array (data, data_type, data_len,
+                      arguments.multiply, arguments.output_type,
+                      add_offset, scale_factor, NULL);
     }
   } else {
-    varid = ncvarid (ncid, arguments.sds_name);
-    ncvarinq(ncid, varid, sds_name, &data_type, &ndims, dimids, &natts);
+    const char
+      *sds_name = arguments.sds_name;
+    void *data, *fill_value;
+    int varid;
+    nc_type data_type;
+    int ndims, dimids[MAX_VAR_DIMS], natts;
+    int data_len;
 
+    varid = ncvarid (ncid, sds_name);
+    ncvarinq (ncid, varid, sds_name,
+              &data_type, &ndims, dimids, &natts);
 
-    
     if(arguments.shape){
-	ncdiminq(ncid, dimids[0], (char *) 0 , &long_tmp);
-	printf("%ld", long_tmp);
+      long dim;
+      ncdiminq (ncid, dimids[0], (char *)0, &dim);
+      printf ("%ld", dim);
       for (i = 1; i < ndims; i++){
-	ncdiminq(ncid, dimids[i], (char *) 0 , &long_tmp);
-	printf(" %ld", long_tmp);
+	ncdiminq (ncid, dimids[i], (char *) 0 , &dim);
+	printf (" %ld", dim);
       }
       printf("\n");
     } else if(arguments.info){
       hdf_print_sds_info(ncid, varid);
     } else {
+      char *ix_p;
+      int **indexs, *indexs_dim;
+
       if(arguments.output_type == OUTTYPE_DEFAULT) 
 	arguments.output_type = OUTTYPE_RAW;
-    
+
       /* parsing of indexs */
-    
+
+      /* FIXME: check for failures */
       indexs = calloc(ndims, sizeof(int *));
       indexs_dim = calloc(ndims, sizeof(int));
-      
+
       if(arguments.indexs != NULL){
-	tmp = arguments.indexs;
-      } else tmp = NULL;
-      
+	ix_p = arguments.indexs;
+      } else ix_p = NULL;
+
       for (i = 0; i < ndims; i++){
-	if (tmp != NULL){
-	  indexs[i] = str2indexs(tmp, &(indexs_dim[i]));
-	  tmp = strchr(tmp, ','); 
-	  if(tmp != NULL) tmp++;
-	}
-	else indexs[i] = NULL;
-	
+	if (ix_p != NULL) {
+	  indexs[i] = str2indexs (ix_p, indexs_dim + i);
+	  ix_p = strchr (ix_p, ','); 
+	  if (ix_p != NULL)
+            ix_p++;
+	} else indexs[i] = NULL;
+
 	if(indexs[i] == NULL){ /* str2indexs can return NULL */
+          long dim;
+          /* FIXME: check for a failure */
 	  indexs[i] = calloc(2, sizeof(int));
-	  ncdiminq(ncid, dimids[ndims - i - 1], (char *) 0 , &long_tmp);
-	  indexs[i][1] = long_tmp - 1;
+	  ncdiminq(ncid, dimids[i], (char *) 0 , &dim);
+	  indexs[i][1] = dim - 1;
 	  indexs_dim[i] = 1;
 	}
       }
@@ -284,22 +317,16 @@ int main (int argc, char *argv[])
       }
       ncopts = NC_FATAL;
 
-      dump = selection(ncid, varid, indexs, indexs_dim, &data_len);
-      
-      hdf_dump_array(dump, data_type, data_len, arguments.multiply, arguments.output_type,
-		     add_offset, scale_factor, fill_value);      
+      data = selection (ncid, varid, indexs, indexs_dim, &data_len);
+      if (data == 0) {
+        error (1, errno, "Failed to get the values");
+      }
+
+      hdf_dump_array (data, data_type, data_len,
+                      arguments.multiply, arguments.output_type,
+                      add_offset, scale_factor, fill_value); 
     }
-    
-    // test
-    /*     for (i = 0; i < ndims; i++){ */
-    /*       printf("dim[%d] = %d\n", i, indexs_dim[i]); */
-    /*       for (j = 0; j < indexs_dim[i]; j++){ */
-    /* 	printf("[%d ; %d]\n", indexs[i][j * 2], indexs[i][j * 2 + 1]); */
-    /*       } */
-    /*     } */
-    
   }
-  
-  //    varid = ncvarid(ncid, arguments.sds_name);  
+
   return 0;
 }

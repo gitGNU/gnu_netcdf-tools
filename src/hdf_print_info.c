@@ -1,8 +1,8 @@
 #include "hdfdump.h"
 
-#include "my_debug.h"
-
-int hdf_print_attribute_info(int ncid, int varid, char *attribute_name, int attnum)
+int
+hdf_print_attribute_info (int ncid, int varid,
+			  const char *attribute_name, int attnum)
 {
   int data_len;
   nc_type data_type;

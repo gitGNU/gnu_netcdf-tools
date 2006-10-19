@@ -1,0 +1,16 @@
+2006-10-13  Ivan Shmakov  <ivan@theory.asu.ru>
+
+	* AUTHORS, COPYING, ChangeLog, INSTALL, NEWS, README: New files.
+
+	* configure.ac, Makefile.am, src/Makefile.am: New Autotools-based
+	  build system.
+
+	* {arch}/=tagging-method: Autotools-generated files are to be
+	  considered `precious' by the GNU Arch.
+
+	* src/hdf_dump_array.c, src/hdfdump.c, src/hdf_print_info.c
+	  (my_debug.h): Do not include it anymore.
+
+	* hdfdump.c (config.h): Include it if available.
+	  (argp_program_version, argp_program_bug_address): Use values of
+	  `PACKAGE_STRING' and `PACKAGE_BUGREPORT' macros.

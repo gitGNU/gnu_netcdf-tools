@@ -1,8 +1,6 @@
 #define _ISOC99_SOURCE
 #include "hdfdump.h"
 
-#include "my_debug.h"
-
 /*  OUTTYPE_DEFAULT,
   OUTTYPE_FLOAT,
   OUTTYPE_TEXT,

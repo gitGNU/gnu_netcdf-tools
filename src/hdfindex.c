@@ -9,7 +9,16 @@
 /* 0 1 2 1..2 , 1 2 3 */
 #define BUFSIZE 1024
 
-int * str2indexs(char * string, int *index){
+/* Useful macros */
+#define CASS(x, y) ((x) = (typeof (x))(y))
+#define MALLOC_VAR(x)     (CASS ((x), malloc             (sizeof (*(x)))))
+#define MALLOC_ARY(x, y)  (CASS ((x), malloc       ((y) * sizeof (*(x)))))
+#define CALLOC_ARY(x, y)  (CASS ((x), calloc       ((y),  sizeof (*(x)))))
+#define REALLOC_ARY(x, y) (CASS ((x), realloc ((x), (y) * sizeof (*(x)))))
+
+int *
+str2indexs (char *string, int *index)
+{
   int *result, *tmp, length, interval; 
   char *tail;
   int next;
@@ -72,83 +81,85 @@ int * str2indexs(char * string, int *index){
   return result;
 }
 
-void * selection(int ncid, int varid, int **set, int *sizes, 
-		 int *number_of_point)
+void *
+selection (int ncid, int varid,
+           const int **set, const int *sizes, 
+           int *number_of_point)
 {
-  void *result, *tmp;
-  int i, j;
+  void *result, *ptr;
+  int i;
   char name[MAX_NC_NAME];
   nc_type data_type;
   int ndims, dimids[MAX_VAR_DIMS], natts;
   int divisor[MAX_VAR_DIMS], n_combination;
-  int sum;
-  int n;
   long *start, *vector;
+  size_t values_count;
+  int elt_sz;
 
+  /* obtain the size of the element */
   ncvarinq(ncid, varid, name, &data_type, &ndims, dimids, &natts);
+  if ((elt_sz = nctypelen (data_type)) == -1) {
+    errno = EINVAL;
+    return NULL;
+  }
 
   /* calculation number of points and ... */
-  *number_of_point = 1;
+  values_count = 1;
   n_combination = 1;
   for (i = 0; i < ndims; i++){
+    int j;
+    int sum;
+
     n_combination *= sizes[i];
     sum = 0;
     for(j = 0; j < sizes[i]; j++)
       sum += set[i][j * 2 + 1] - set[i][j * 2] + 1;
-    *number_of_point *= sum; 
+    values_count *= sum; 
   }
-
   /* allocate memory */
-  result = hdf_memory_allocate(data_type, *number_of_point);
-  if(result == NULL){
-    *number_of_point = 0;
-    error(0, 0, "%s : Can't allocate memory", __FUNCTION__);
-    return NULL;
+  if ((result = malloc (elt_sz * values_count)) == 0) {
+    return 0;
   }
 
   for (i = 0; i < ndims; i++){
+    int j;
     divisor[i] = 1;
     for(j = i + 1; j < ndims; j++)
       divisor[i] *= sizes[j];
   }
   
-  start = malloc(ndims * sizeof(long));
-  vector = malloc(ndims * sizeof(long));
-  tmp = result;
-  for (i = 0; i < n_combination; i++){
-    for(n = 1, j = 0; j < ndims; j++){
-      start[ndims - j - 1] = set[j][i / (divisor[j]) % (sizes[j]) * 2];
-      vector[ndims - j - 1] = set[j][i / (divisor[j]) % (sizes[j]) * 2 + 1] - 
-	set[j][i / (divisor[j]) % (sizes[j]) * 2] + 1;
-      n *= vector[j];
-    }
-
-    ncvarget(ncid, varid, start, vector, tmp); 
-
-    switch(data_type) {
-    case NC_BYTE:
-    case NC_CHAR:
-      tmp = tmp + n * 1;
-      break;
-      
-    case NC_SHORT:
-      tmp = tmp + n * 2;
-      break;
-      
-    case NC_LONG:
-    case NC_FLOAT:
-      tmp = tmp + n * 4;
-      break;
-      
-    case NC_DOUBLE:
-      tmp = tmp + n * 8;
-      
-      break;
-      
-    default:
-      return NULL;
-    }
+  if (MALLOC_ARY (start, ndims) == 0) {
+    free (result);
+    return NULL;
+  } else if (MALLOC_ARY (vector, ndims) == 0) {
+    free (result);
+    free (vector);
+    return NULL;
   }
+
+  ptr = result;
+  for (i = 0; i < n_combination; i++){
+    size_t length;
+    int j;
+
+    for (length = 1, j = 0; j < ndims; j++) {
+      const int *p = &(set[j][i / divisor[j] % sizes[j] * 2]);
+      const int
+        from = p[0],
+        len  = p[1] - from + 1;
+      start[j]  = from;
+      vector[j] = len;
+      length   *= len;
+      /* fprintf (stderr, "%d: %d+%d => %d\n", j, len, from, length); */
+    }
+
+    ncvarget (ncid, varid, start, vector, ptr); 
+    ptr += length * elt_sz;
+  }
+
+  if (number_of_point != 0)
+    *number_of_point = values_count;
+
   return result;
 }
 
