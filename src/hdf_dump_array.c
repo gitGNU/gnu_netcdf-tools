@@ -14,7 +14,7 @@ hdf_dump_array(void * var, nc_type data_type, int length, double multiply,
 
   int i;
   float  *tmp;
-  char   *var_char;
+  unsigned char   *var_char;
   short  *var_short;
   long   *var_long;
   float  *var_float;
@@ -28,7 +28,7 @@ hdf_dump_array(void * var, nc_type data_type, int length, double multiply,
   switch(data_type) {
 
   case NC_BYTE:
-    var_char = (char *) var;
+    var_char = (unsigned char *) var;
     switch(output_type){
     case OUTTYPE_TEXT:
       for(i = 0; i < length; i++) 
