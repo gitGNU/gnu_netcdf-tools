@@ -1,6 +1,6 @@
 ### Makefile.am  -*- Makefile -*-
 
-SUBDIRS      = src
-DIST_SUBDIRS = src
+SUBDIRS      = lib src
+DIST_SUBDIRS = lib src
 
 ### Makefile.am ends here

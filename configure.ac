@@ -38,7 +38,9 @@ AC_FUNC_REALLOC
 AC_FUNC_STRTOD
 AC_CHECK_FUNCS([strchr strdup strtol])
 
-AC_CONFIG_FILES([Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile
+                 lib/Makefile
+                 src/Makefile])
 
 AC_OUTPUT
 
