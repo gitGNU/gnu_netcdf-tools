@@ -8,6 +8,13 @@
 #include <argp.h>
 
 #include "hdfdump.h"
+#include "p_arg.h"
+
+/* FIXME: use gettext */
+#if 1
+#define  _(s) (s)
+#define N_(s) (s)
+#endif
 
 const char *argp_program_version = PACKAGE_STRING;
 const char *argp_program_bug_address = PACKAGE_BUGREPORT;
@@ -90,24 +97,30 @@ parse_opt (int key, char *arg, struct argp_state *state)
     break;
 
   case 'm':
-    args->multiply = strtod (arg, &tmp);
-    if(arg == tmp) {
-      args->multiply = 1;
-      error (0, errno, "%s - invalid number", arg);
+    if (p_arg_double (arg, &args->multiply)) {
+      argp_error (state, N_("%s: invalid multiplier,"
+                            " should be a floating point number"),
+                  arg);
+      /* . */
+      return EINVAL;
     }
     break;
   case 'a':
-    args->add_offset = strtod (arg, &tmp);
-    if(arg == tmp) {
-      args->add_offset = NAN;
-      error (0, errno, "%s - invalid number", arg);
+    if (p_arg_double (arg, &args->add_offset)) {
+      argp_error (state, N_("%s: invalid offset to add,"
+                            " should be a floating point number"),
+                  arg);
+      /* . */
+      return EINVAL;
     }
     break;
   case 's':
-    args->scale_factor = strtod (arg, &tmp);
-    if(arg == tmp) {
-      args->scale_factor = NAN;
-      error (0, errno, "%s - invalid number", arg);
+    if (p_arg_double (arg, &args->scale_factor)) {
+      argp_error (state, N_("%s: invalid scale,"
+                            " should be a floating point number"),
+                  arg);
+      /* . */
+      return EINVAL;
     }
     break;
 
