@@ -2,8 +2,8 @@
 
 ## Put the libraries here
 
-# noinst_LIBRARIES = libFOO.a
+noinst_LIBRARIES = libhdfdump.a
 
-# libFOO_a_SOURCES = BAR.c
+libhdfdump_a_SOURCES = p_arg.c
 
 ### Makefile.am ends here

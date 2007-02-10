@@ -14,6 +14,7 @@ AC_DEFUN([MY_NO_LIBRARY],
 
 # Checks for programs.
 AC_PROG_CC
+AC_PROG_RANLIB
 
 # Checks for libraries.
 AC_CHECK_LIB([m],      [sqrt], , [MY_NO_LIBRARY])
