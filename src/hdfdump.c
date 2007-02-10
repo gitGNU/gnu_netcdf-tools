@@ -65,74 +65,74 @@ parse_opt (int key, char *arg, struct argp_state *state)
 {
   /* Get the `input' argument from `argp_parse', which we
      know is a pointer to our arguments structure. */
-  struct arguments *arguments = state->input;
+  struct arguments *args = state->input;
   char *tmp;
 
   switch (key) {
   case 'f':
-    arguments->output_type = OUTTYPE_FLOAT;
+    args->output_type = OUTTYPE_FLOAT;
     break;
 
   case 'T':
-    arguments->output_type = OUTTYPE_TEXT;
+    args->output_type = OUTTYPE_TEXT;
     break;
 
   case 'R':
-    arguments->output_type = OUTTYPE_RAW;
+    args->output_type = OUTTYPE_RAW;
     break;
     
   case 'S':
-    arguments->shape = 1;
+    args->shape = 1;
     break;
 
   case 'i':
-    arguments->info = 1;
+    args->info = 1;
     break;
 
   case 'm':
-    arguments->multiply = strtod (arg, &tmp);
+    args->multiply = strtod (arg, &tmp);
     if(arg == tmp) {
-      arguments->multiply = 1;
+      args->multiply = 1;
       error (0, errno, "%s - invalid number", arg);
     }
     break;
   case 'a':
-    arguments->add_offset = strtod (arg, &tmp);
+    args->add_offset = strtod (arg, &tmp);
     if(arg == tmp) {
-      arguments->add_offset = NAN;
+      args->add_offset = NAN;
       error (0, errno, "%s - invalid number", arg);
     }
     break;
   case 's':
-    arguments->scale_factor = strtod (arg, &tmp);
+    args->scale_factor = strtod (arg, &tmp);
     if(arg == tmp) {
-      arguments->scale_factor = NAN;
+      args->scale_factor = NAN;
       error (0, errno, "%s - invalid number", arg);
     }
     break;
 
   case ARGP_KEY_ARG:
-    if(arguments->input_file == NULL){
-      arguments->input_file = strdup(arg);
+    if(args->input_file == NULL){
+      args->input_file = strdup(arg);
     }
-    else if(arguments->sds_name == NULL && arguments->attribute_name == NULL){
+    else if(args->sds_name == NULL && args->attribute_name == NULL){
       tmp = strchr(arg, ':');
       if(tmp == NULL){
-	arguments->sds_name = strdup(arg);
+	args->sds_name = strdup(arg);
       }
       else {
-	arguments->attribute_name = strdup(tmp + 1);
+	args->attribute_name = strdup(tmp + 1);
 	if(tmp == arg){
-	  arguments->sds_name = NULL;
+	  args->sds_name = NULL;
 	}
 	else{ 
-	  arguments->sds_name = malloc((tmp - arg + 1) * sizeof(char));
-	  strncpy(arguments->sds_name, arg, tmp - arg);
-	  arguments->sds_name[tmp - arg] = '\0';
+	  args->sds_name = malloc((tmp - arg + 1) * sizeof(char));
+	  strncpy(args->sds_name, arg, tmp - arg);
+	  args->sds_name[tmp - arg] = '\0';
 	}
       }
-    } else if(arguments->indexs == NULL){
-      arguments->indexs = arg;
+    } else if(args->indexs == NULL){
+      args->indexs = arg;
     } else {
       argp_error (state, "too many non-option arguments given");
       return EINVAL;
@@ -140,10 +140,10 @@ parse_opt (int key, char *arg, struct argp_state *state)
     break;
 
   case ARGP_KEY_END:
-    if (arguments->input_file == NULL) {
+    if (args->input_file == NULL) {
       argp_error (state, "no file name given");
       return EINVAL;
-    } else if (arguments->sds_name == NULL) {
+    } else if (args->sds_name == NULL) {
       argp_error (state, "no SDS name given");
       return EINVAL;
     }
