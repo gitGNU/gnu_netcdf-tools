@@ -176,11 +176,8 @@ int main (int argc, char *argv[])
   struct arguments arguments;
   int ncid;
   int i;
-  double add_offset,  scale_factor;
   
   /* Default values.                  */
-  add_offset               = 0;
-  scale_factor             = 1;
   arguments.input_file     = NULL;
   arguments.sds_name       = NULL;
   arguments.attribute_name = NULL;
@@ -251,7 +248,7 @@ int main (int argc, char *argv[])
       ncattget (ncid, varid, attribute_name, data);
       hdf_dump_array (data, data_type, data_len,
                       arguments.multiply, arguments.output_type,
-                      add_offset, scale_factor, NULL);
+                      0, 1, NULL);
     }
   } else {
     const char
@@ -280,6 +277,7 @@ int main (int argc, char *argv[])
     } else {
       char *ix_p;
       int **indexs, *indexs_dim;
+      double add_offset, scale_factor;
 
       if(arguments.output_type == OUTTYPE_DEFAULT) 
 	arguments.output_type = OUTTYPE_RAW;
