@@ -237,6 +237,11 @@ int main (int argc, char *argv[])
     } else {
       void *data;
       int elt_sz;
+      const struct output_conversion conv = {
+        .output_type = arguments.output_type,
+        .coeffs = { 0, arguments.multiply },
+        .map_to_nan = 0
+      };
 
       if ((elt_sz = nctypelen (data_type)) == -1) {
         error (1, 0, "%d: Unknown HDF data type", (int)data_type);
@@ -246,9 +251,7 @@ int main (int argc, char *argv[])
         error (1, errno, "Failed to allocate memory");
       }
       ncattget (ncid, varid, attribute_name, data);
-      hdf_dump_array (data, data_type, data_len,
-                      arguments.multiply, arguments.output_type,
-                      0, 1, NULL);
+      hdf_dump_array (data, data_type, data_len, &conv, stdout);
     }
   } else {
     const char
@@ -333,9 +336,17 @@ int main (int argc, char *argv[])
         error (1, errno, "Failed to get the values");
       }
 
-      hdf_dump_array (data, data_type, data_len,
-                      arguments.multiply, arguments.output_type,
-                      add_offset, scale_factor, fill_value); 
+      {
+        const struct output_conversion conv = {
+          .output_type = arguments.output_type,
+          .coeffs = {
+            arguments.multiply * add_offset,
+            arguments.multiply * scale_factor
+          },
+          .map_to_nan = fill_value
+        };
+        hdf_dump_array (data, data_type, data_len, &conv, stdout);
+      }
     }
   }
 

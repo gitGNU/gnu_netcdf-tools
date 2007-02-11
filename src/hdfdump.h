@@ -21,13 +21,20 @@ enum t_output_type {
   OUTTYPE_RAW
 };
 
+struct output_conversion {
+  enum t_output_type output_type;
+  double coeffs[2];
+  void *map_to_nan;
+};
+
 int *str2indexs (char *string, int *index);
-int hdf_dump_array(void * var, nc_type data_type, int length, double multiply, 
-		   enum t_output_type output_type, double addofset, 
-		   double scale_factor, void *fill_value);
 void *selection (int ncid, int varid,
                  const int **set, const int *sizes, 
 		 int *number_of_point);
+
+int hdf_dump_array (void *var, nc_type data_type, size_t length,
+                    const struct output_conversion *conv,
+                    FILE *fp);
 
 int hdf_print_attribute_info (int ncid, int varid,
                               const char *attribute_name, int attnum);
