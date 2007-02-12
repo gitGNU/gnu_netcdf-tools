@@ -34,12 +34,19 @@ static char args_doc[] = ("[OPTION] FILE SDS\n"
 
 /* Keys for options without short-options. */
 /* ---- */
-    
+
+enum opts {
+  opt_offset = 256,
+  opt_double,
+  opt_max
+};
+
 /* The options we understand. */
 
 static struct argp_option options[] = {
   { 0, 0, 0, 0, "output format selection"},
   { "float32",  'f', NULL, 0, "float32 format" },
+  { "double",   opt_double, NULL, 0, N_("double format") },
   { "text",     'T', NULL, 0, "text format (default for attributes)" },
   { "raw",      'R', NULL, 0, "raw data (default for SDSes), `-m' is ignored" },
   { 0, 0, 0, 0, "miscellaneous" },
@@ -76,6 +83,10 @@ parse_opt (int key, char *arg, struct argp_state *state)
   char *tmp;
 
   switch (key) {
+  case opt_double:
+    args->output_type = OUTTYPE_DOUBLE;
+    break;
+
   case 'f':
     args->output_type = OUTTYPE_FLOAT;
     break;
