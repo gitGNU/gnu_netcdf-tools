@@ -57,6 +57,8 @@ static struct argp_option options[] = {
     "or define if it is undeclaed"},
   { "shape",    'S', NULL, 0, "print the SDS (or attribute) shape instead, in text format" },
   { "info",     'i', NULL, 0, "print the info about SDS (or attribute) in text format" },
+  { "output",           'o', "FILE", 0,
+    N_("output the result to this file instead of stdout") },
   {0}
 };
 
@@ -71,6 +73,7 @@ struct arguments {
   double scale_factor;
   int  shape;
   int info;
+  const char *output_file;
 };
 
 /* Parse a single option. */
@@ -163,6 +166,10 @@ parse_opt (int key, char *arg, struct argp_state *state)
     }
     break;
 
+  case 'o':
+    args->output_file = arg;
+    break;
+
   case ARGP_KEY_END:
     if (args->input_file == NULL) {
       argp_error (state, "no file name given");
@@ -187,6 +194,7 @@ int main (int argc, char *argv[])
   struct arguments arguments;
   int ncid;
   int i;
+  FILE *output;
   
   /* Default values.                  */
   arguments.input_file     = NULL;
@@ -199,6 +207,7 @@ int main (int argc, char *argv[])
   arguments.scale_factor    = NAN;
   arguments.shape          = 0;
   arguments.info           = 0;
+  arguments.output_file    = "-";
   /* -------------------------------- */
 
   /* parsing command line arguments   */
@@ -221,6 +230,11 @@ int main (int argc, char *argv[])
   if (ncid < 0) {
     error (1, 0, "%s: Failed to open",
            arguments.input_file);
+  }
+
+  /* open the output file */
+  if ((output = open_file (arguments.output_file, 0)) == 0) {
+    error (1, errno, "%s", arguments.output_file);
   }
 
   if (arguments.attribute_name != NULL) {
@@ -262,7 +276,7 @@ int main (int argc, char *argv[])
         error (1, errno, "Failed to allocate memory");
       }
       ncattget (ncid, varid, attribute_name, data);
-      hdf_dump_array (data, data_type, data_len, &conv, stdout);
+      hdf_dump_array (data, data_type, data_len, &conv, output);
     }
   } else {
     const char
@@ -356,10 +370,12 @@ int main (int argc, char *argv[])
           },
           .map_to_nan = fill_value
         };
-        hdf_dump_array (data, data_type, data_len, &conv, stdout);
+        hdf_dump_array (data, data_type, data_len, &conv, output);
       }
     }
   }
+
+  close_file (output);
 
   return 0;
 }
