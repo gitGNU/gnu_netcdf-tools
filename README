@@ -1,0 +1,27 @@
+    [This is, basically, the copy of the project home page,
+     http://theory.asu.ru/~ivan/devel/hdfdump.]
+
+* The tool
+
+    HDF dump extracts a scientific data set (SDS), or a part of it, from
+    an HDF file, optionally applying `scale_factor' and `add_offset' SDS
+    attributes.  The result could be requested in either raw, text or
+    machine-dependend floating-point representation.
+
+    This tool allows to use HDF SDS data as input for tools, designed to
+    operate on ASCII (text) or raw (binary) data. It complements
+    standard HDF `hdp' tool in the following ways:
+
+     * attributes `scale_factor' and `add_offset' are taken into account
+       when dumping an SDS; if they're incorrect, they could be
+       overriden by the corresponding command line options;
+
+     * the data could be dumped in ASCII (text) or raw (binary; the same
+       form as stored in the HDF file) form, as well as in a form of
+       single- or double-precision machine-specific floating point
+       numbers (C types float and double are supported);
+
+     * GNU long options are supported, allowing for better
+       self-describing Shell code.
+
+    Ivan Shmakov <ivan@theory.asu.ru>
