@@ -1,0 +1,22 @@
+TODO  -*- Text -*-
+
+* Documentation.
+
+* Check for ``FIXME'' markers all along the code.  In particular, allow
+  for the location of the HDF4 version of netcdf.h to be specified
+  explicitly.
+
+* Add ``buffer management'' for ncget.  E. g., extracting a large single
+  part of an NetCDF variable (HDF4 SDS) requires a buffer in the virtual
+  memory as large as the part to be extracted, while a smaller buffer
+  could be used just as well at the expense of having to make more calls
+  to ncvarget ().
+
+* Allow the NetCDF ``type'' to be specified for `ncattput'.  Allow for
+  representation conversions.
+
+* Drop ncattget, since ncget apparently does everything ncattget does?
+
+* Implement ncput.  Drop ncattput then?
+
+TODO ends here
