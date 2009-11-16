@@ -1,27 +1,51 @@
 ### configure.ac  -*- Autoconf -*-
 
 AC_PREREQ(2.59)
-dnl FIXME: full name? version?
-AC_INIT([HDFdump], [0.1-is], [ivan@theory.asu.ru])
+AC_INIT([ncget], [0.0.1], [ivan@main.uusia.org])
 AC_CONFIG_SRCDIR([src/hdfdump.c])
 AC_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE([foreign])
-
-AC_DEFUN([MY_NO_FUNCTION],
-  [AC_MSG_ERROR([Required function not found])])
-AC_DEFUN([MY_NO_LIBRARY],
-  [AC_MSG_ERROR([Required library not found])])
 
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_RANLIB
 
 # Checks for libraries.
-AC_CHECK_LIB([m],      [sqrt], , [MY_NO_LIBRARY])
-AC_CHECK_LIB([z],      [deflate], , [MY_NO_LIBRARY])
-AC_CHECK_LIB([jpeg],   [jpeg_read_header], , [MY_NO_LIBRARY])
-AC_CHECK_LIB([df],     [DFopen], , [MY_NO_LIBRARY])
-AC_CHECK_LIB([mfhdf],  [SDstart], , [MY_NO_LIBRARY])
+
+my_ac_check_lib_netcdf_save_LIBS="$LIBS"
+LIBS="$LIBS_NETCDF_EXTRA $LIBS"
+AC_CHECK_LIB([netcdf], [ncopen], [dnl
+  AH_CHECK_LIB([netcdf])
+  AC_DEFINE([HAVE_LIBNETCDF], 1)
+  LIBS_NETCDF_EXTRA="-lnetcdf $LIBS_NETCDF_EXTRA"])
+LIBS="$my_ac_check_lib_netcdf_save_LIBS"
+
+## FIXME: shouldn't be necessary
+my_ac_check_lib_df_save_LIBS="$LIBS"
+LIBS="$LIBS_HDF4_EXTRA $LIBS"
+AC_CHECK_LIB([df], [DFopen], [dnl
+  AH_CHECK_LIB([df])
+  AC_DEFINE([HAVE_LIBDF], 1)
+  LIBS_HDF4_EXTRA="-ldf $LIBS_HDF4_EXTRA"])
+LIBS="$my_ac_check_lib_df_save_LIBS"
+
+my_ac_check_lib_mfhdf_save_LIBS="$LIBS"
+LIBS="$LIBS_HDF4_EXTRA $LIBS"
+AC_CHECK_LIB([mfhdf],  [ncopen], [dnl
+  AH_CHECK_LIB([mfhdf])
+  AC_DEFINE([HAVE_LIBMFHDF], 1)
+  LIBS_HDF4_EXTRA="-lmfhdf $LIBS_HDF4_EXTRA"])
+LIBS="$my_ac_check_lib_mfhdf_save_LIBS"
+
+AS_IF([test "$ac_cv_lib_netcdf_ncopen" = no \
+           && test "$ac_cv_lib_mfhdf_ncopen" = no],
+      [AC_MSG_ERROR([Neither -lnetcdf nor -lmfhdf available])])
+AC_SUBST([LIBS_NETCDF_EXTRA])
+AC_SUBST([LIBS_HDF4_EXTRA])
+AM_CONDITIONAL([HAVE_LIBNETCDF],
+               [test "$ac_cv_lib_netcdf_ncopen" = yes])
+AM_CONDITIONAL([HAVE_LIBHDF4],
+               [test "$ac_cv_lib_mfhdf_ncopen" = yes])
 
 # Checks for header files.
 AC_HEADER_STDC
