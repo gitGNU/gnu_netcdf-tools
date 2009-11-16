@@ -5,7 +5,7 @@ dnl FIXME: full name? version?
 AC_INIT([HDFdump], [0.1-is], [ivan@theory.asu.ru])
 AC_CONFIG_SRCDIR([src/hdfdump.c])
 AC_CONFIG_HEADER([config.h])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([foreign])
 
 AC_DEFUN([MY_NO_FUNCTION],
   [AC_MSG_ERROR([Required function not found])])
