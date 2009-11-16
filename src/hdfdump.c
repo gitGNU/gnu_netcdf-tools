@@ -9,6 +9,7 @@
 
 #include "hdfdump.h"
 #include "p_arg.h"
+#include "useutil.h"
 
 /* FIXME: use gettext */
 #if 1
