@@ -10,7 +10,44 @@ README  -*- Text -*-
 	simplistic Shell wrappers over the respective NetCDF functions
 	(ncattget and ncattput), and a more sophisticated ncget tool.
 
+* The ncget tool
+
+	The ncget tool implements a like to (for NetCDF), or complements
+	the hdp dumpsds (for HDF4) functionalilty, and allows a selected
+	part of a NetCDF variable or an HDF4 scientific data set (SDS)
+	to be extracted in either an ASCII or binary (machine float,
+	machine double, or as-returned formats) form, optionally
+	applying the transformation specified by the scale_factor and
+	add_offset attributes.
+
+	This tool allows to feed NetCDF variables' (or HDF4 SDS') data
+	to tools, designed to operate on either ASCII (text) or raw
+	(binary) data.
+
+	The tool complements the standard HDF4 hdp tool in the following
+	ways:
+
+	* the scale_factor and add_offset attributes are applied; these
+	  could be overriden by the respective command line options;
+
+	* the data could be extracted in the binary machine single- or
+	  double-precision floating point number form, as well as the
+	  raw form (the same form as returned by the respective library
+	  calls) and the ASCII form;
+
+	* GNU long options are supported, allowing for better
+	  self-describing Shell code.
+
+	Authors don't know a tool providing a similar functionality for
+	the NetCDF files.
+
 * History
+
+	The working prototype of the ncget tool was written in Tcl using
+	the Tcl-NAP extension in 2006 by Ivan Shmakov.  It was then
+	rewritten in C for speed by Anton Reznikov the same year.  From
+	the October, 2006, and until March, 2007, Ivan Shmakov provided
+	further bug-fixes, clean-ups and enhancements.
 
 	The simplistic ncattget and ncattput tools were written by Ivan
 	Shmakov in November, 2009.

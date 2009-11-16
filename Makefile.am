@@ -1,6 +1,6 @@
 ### Makefile.am --- Top-level Makefile.am  -*- Makefile-Automake -*-
 
-SUBDIRS = src doc
-DIST_SUBDIRS = src doc
+SUBDIRS      = lib src doc
+DIST_SUBDIRS = lib src doc
 
 ### Makefile.am ends here
