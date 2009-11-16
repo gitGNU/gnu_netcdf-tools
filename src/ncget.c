@@ -7,7 +7,7 @@
 
 #include <argp.h>
 
-#include "hdfdump.h"
+#include "ncget.h"
 #include "p_arg.h"
 #include "useutil.h"
 
@@ -259,7 +259,7 @@ int main (int argc, char *argv[])
     if(arguments.shape)
       printf("%d\n", data_len);
     else if(arguments.info) {
-      hdf_print_attribute_info (ncid, varid, attribute_name, 0);
+      print_nc_attribute_info (ncid, varid, attribute_name, 0);
     } else {
       void *data;
       int elt_sz;
@@ -277,7 +277,7 @@ int main (int argc, char *argv[])
         error (1, errno, "Failed to allocate memory");
       }
       ncattget (ncid, varid, attribute_name, data);
-      hdf_dump_array (data, data_type, data_len, &conv, output);
+      dump_array (data, data_type, data_len, &conv, output);
     }
   } else {
     const char
@@ -302,7 +302,7 @@ int main (int argc, char *argv[])
       }
       printf("\n");
     } else if(arguments.info){
-      hdf_print_sds_info(ncid, varid);
+      print_nc_sds_info(ncid, varid);
     } else {
       char *ix_p;
       int **indexs, *indexs_dim;
@@ -323,13 +323,13 @@ int main (int argc, char *argv[])
 
       for (i = 0; i < ndims; i++){
 	if (ix_p != NULL) {
-	  indexs[i] = str2indexs (ix_p, indexs_dim + i);
+          indexs[i] = ncsel_strtoi (ix_p, indexs_dim + i);
 	  ix_p = strchr (ix_p, ','); 
 	  if (ix_p != NULL)
             ix_p++;
 	} else indexs[i] = NULL;
 
-	if(indexs[i] == NULL){ /* str2indexs can return NULL */
+        if (indexs[i] == NULL) {
           long dim;
           /* FIXME: check for a failure */
 	  indexs[i] = calloc(2, sizeof(int));
@@ -357,7 +357,7 @@ int main (int argc, char *argv[])
       }
       ncopts = NC_FATAL;
 
-      data = selection (ncid, varid, indexs, indexs_dim, &data_len);
+      data = ncsel (ncid, varid, indexs, indexs_dim, &data_len);
       if (data == 0) {
         error (1, errno, "Failed to get the values");
       }
@@ -371,7 +371,7 @@ int main (int argc, char *argv[])
           },
           .map_to_nan = fill_value
         };
-        hdf_dump_array (data, data_type, data_len, &conv, output);
+        dump_array (data, data_type, data_len, &conv, output);
       }
     }
   }

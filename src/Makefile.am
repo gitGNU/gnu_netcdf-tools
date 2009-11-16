@@ -15,7 +15,7 @@ LDADD = $(top_builddir)/lib/libhdfdump.a
 LIBS_NETCDF = $(LIBS) $(LIBS_NETCDF_EXTRA)
 LIBS_HDF4   = $(LIBS) $(LIBS_HDF4_EXTRA)
 
-ncget_SOURCES_1 = hdf_dump_array.c hdf_print_info.c hdfdump.c hdfindex.c
+ncget_SOURCES_1 = dump_array.c print_nc_info.c ncget.c ncsel.c
 
 ## FIXME: eliminate a hard-coded path
 CPPFLAGS_HDF4 = -I/usr/include/hdf $(CPPFLAGS)

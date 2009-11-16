@@ -1,4 +1,4 @@
-#include "hdfdump.h"
+#include "ncget.h"
 
 
 /* my useful macros for debuging */ 
@@ -17,7 +17,7 @@
 #define REALLOC_ARY(x, y) (CASS ((x), realloc ((x), (y) * sizeof (*(x)))))
 
 int *
-str2indexs (char *string, int *index)
+ncsel_strtoi (char *string, int *index)
 {
   int *result, *tmp, length, interval; 
   char *tail;
@@ -82,9 +82,9 @@ str2indexs (char *string, int *index)
 }
 
 void *
-selection (int ncid, int varid,
-           const int **set, const int *sizes, 
-           int *number_of_point)
+ncsel (int ncid, int varid,
+       const int **set, const int *sizes, 
+       int *number_of_point)
 {
   void *result, *ptr;
   int i;

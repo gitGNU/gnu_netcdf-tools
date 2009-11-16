@@ -1,8 +1,8 @@
-#include "hdfdump.h"
+#include "ncget.h"
 
 int
-hdf_print_attribute_info (int ncid, int varid,
-			  const char *attribute_name, int attnum)
+print_nc_attribute_info (int ncid, int varid,
+                         const char *attribute_name, int attnum)
 {
   int data_len;
   nc_type data_type;
@@ -56,7 +56,7 @@ hdf_print_attribute_info (int ncid, int varid,
   return 0;
 }
 
-int hdf_print_sds_info(int ncid, int varid)
+int print_nc_sds_info(int ncid, int varid)
 {
   int i;
   nc_type data_type;
@@ -104,6 +104,6 @@ int hdf_print_sds_info(int ncid, int varid)
   printf("\n");
 
   for(i = 0; i < natts; i++)
-    hdf_print_attribute_info(ncid, varid, (char *) NULL, i);
+    print_nc_attribute_info(ncid, varid, (char *) NULL, i);
   return 0;
 }

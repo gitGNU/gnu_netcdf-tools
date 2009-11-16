@@ -1,7 +1,7 @@
 #define _ISOC99_SOURCE
 #include <assert.h>
 
-#include "hdfdump.h"
+#include "ncget.h"
 
 #include "numconv.h"
 
@@ -178,10 +178,9 @@ fprint_conv_ary (const void *ary, size_t size,
   return 0;
 }
 
-int
-hdf_dump_array (void *var, nc_type data_type, size_t length,
-                const struct output_conversion *conv,
-                FILE *fp)
+dump_array (void *var, nc_type data_type, size_t length,
+            const struct output_conversion *conv,
+            FILE *fp)
 {
   const enum t_output_type output_type = conv->output_type;
 

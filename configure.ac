@@ -2,7 +2,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT([ncget], [0.0.1], [ivan@main.uusia.org])
-AC_CONFIG_SRCDIR([src/hdfdump.c])
+AC_CONFIG_SRCDIR([src/ncget.c])
 AC_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE([foreign])
 
