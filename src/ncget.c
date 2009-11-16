@@ -196,7 +196,8 @@ parse_opt (int key, char *arg, struct argp_state *state)
     if (args->input_file == NULL) {
       argp_error (state, "no file name given");
       return EINVAL;
-    } else if (args->sds_name == NULL) {
+    } else if (args->attribute_name == NULL
+               && args->sds_name == NULL) {
       argp_error (state, "no SDS name given");
       return EINVAL;
     }
