@@ -1,27 +1,44 @@
-    [This is, basically, the copy of the project home page,
-     http://theory.asu.ru/~ivan/devel/hdfdump.]
+README  -*- Text -*-
 
-* The tool
+* The ncget tool
 
-    HDF dump extracts a scientific data set (SDS), or a part of it, from
-    an HDF file, optionally applying `scale_factor' and `add_offset' SDS
-    attributes.  The result could be requested in either raw, text or
-    machine-dependend floating-point representation.
+	The ncget tool implements a like to (for NetCDF), or complements
+	the hdp dumpsds (for HDF4) functionalilty, and allows a selected
+	part of a NetCDF variable or an HDF4 scientific data set (SDS)
+	to be extracted in either an ASCII or binary (machine float,
+	machine double, or as-returned formats) form, optionally
+	applying the transformation specified by the scale_factor and
+	add_offset attributes.
 
-    This tool allows to use HDF SDS data as input for tools, designed to
-    operate on ASCII (text) or raw (binary) data. It complements
-    standard HDF `hdp' tool in the following ways:
+	This tool allows to feed NetCDF variables' (or HDF4 SDS') data
+	to tools, designed to operate on either ASCII (text) or raw
+	(binary) data.
 
-     * attributes `scale_factor' and `add_offset' are taken into account
-       when dumping an SDS; if they're incorrect, they could be
-       overriden by the corresponding command line options;
+	The tool complements the standard HDF4 hdp tool in the following
+	ways:
 
-     * the data could be dumped in ASCII (text) or raw (binary; the same
-       form as stored in the HDF file) form, as well as in a form of
-       single- or double-precision machine-specific floating point
-       numbers (C types float and double are supported);
+	* the scale_factor and add_offset attributes are applied; these
+	  could be overriden by the respective command line options;
 
-     * GNU long options are supported, allowing for better
-       self-describing Shell code.
+	* the data could be extracted in the binary machine single- or
+	  double-precision floating point number form, as well as the
+	  raw form (the same form as returned by the respective library
+	  calls) and the ASCII form;
 
-    Ivan Shmakov <ivan@theory.asu.ru>
+	* GNU long options are supported, allowing for better
+	  self-describing Shell code.
+
+	Authors don't know a tool providing a similar functionality for
+	the NetCDF files.
+
+* History
+
+	The working prototype of the ncget tool was written in Tcl using
+	the Tcl-NAP extension in 2006 by Ivan Shmakov.  It was then
+	rewritten in C for speed by Anton Reznikov the same year.  From
+	the October, 2006, and until March, 2007, Ivan Shmakov provided
+	further bug-fixes, clean-ups and enhancements.
+
+	Ivan Shmakov <ivan@main.uusia.org>
+
+README ends here
