@@ -1,0 +1,20 @@
+README  -*- Text -*-
+
+* What are NetCDF tools?
+
+	The NetCDF tools are a few tools to operate on NetCDF and, by
+	utilizing the compatibility API, HDF4 files, and intended to be
+	used from the Shell scripts.
+
+	The NetCDF tools package is currently comprised of a couple of
+	simplistic Shell wrappers over the respective NetCDF functions
+	(ncattget and ncattput), and a more sophisticated ncget tool.
+
+* History
+
+	The simplistic ncattget and ncattput tools were written by Ivan
+	Shmakov in November, 2009.
+
+	Ivan Shmakov <ivan@main.uusia.org>
+
+README ends here
