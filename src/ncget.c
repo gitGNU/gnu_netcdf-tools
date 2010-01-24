@@ -69,8 +69,8 @@ static struct argp_option options[] = {
   { 0, 0, 0, 0, "output format selection"},
   { "float32",  'f', NULL, 0, "float32 format" },
   { "double",   opt_double, NULL, 0, N_("double format") },
-  { "text",     'T', NULL, 0, "text format (default for attributes)" },
-  { "raw",      'R', NULL, 0, "raw data (default for SDSes), `-m' is ignored" },
+  { "text",     'T', NULL, 0, "text format (default)" },
+  { "raw",      'R', NULL, 0, "raw data, `-m' is ignored" },
   { 0, 0, 0, 0, "miscellaneous" },
   { "multiply", 'm', "MULTIPLIER", 0, "multiply each NAO element by the value given" },
   { "override-addoffset", 'a', "ADDOFFSET", 0, "Override addoffset given by HDFfile"
@@ -249,6 +249,9 @@ int main (int argc, char *argv[])
   /*   dumpi(arguments.shape); */
   /* ---------------------------------*/
 
+  if (arguments.output_type == OUTTYPE_DEFAULT)
+    arguments.output_type = OUTTYPE_RAW;
+
   ncid = ncopen (arguments.input_file, NC_NOWRITE);
   if (ncid < 0) {
     error (1, 0, "%s: Failed to open",
@@ -267,9 +270,6 @@ int main (int argc, char *argv[])
     int varid;
     nc_type data_type;
     int data_len;
-
-    if(arguments.output_type == OUTTYPE_DEFAULT) 
-      arguments.output_type = OUTTYPE_TEXT;
     
     if (arguments.sds_name == NULL) {
       varid = NC_GLOBAL;
@@ -329,9 +329,6 @@ int main (int argc, char *argv[])
       char *ix_p;
       int **indexs, *indexs_dim;
       double add_offset, scale_factor;
-
-      if(arguments.output_type == OUTTYPE_DEFAULT) 
-	arguments.output_type = OUTTYPE_RAW;
 
       /* parsing of indexs */
 
