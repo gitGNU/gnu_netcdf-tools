@@ -1,0 +1,27 @@
+BUGS  -*- Text -*-
+
+	In the list below, the bug listed for a NetCDF command is also
+	present in its HDF4 (COMMAND-hdf) counterpart, unless said
+	otherwise.
+
+	When the output format for ncget is set to either float or
+        double, the programs are subject to the RLIMIT_STACK resource
+        limit.  Please ensure that the programs are run within an
+        environment with this limit set high enough to contain the whole
+        set of data requested in the target (that is, float or double)
+        representation.  Elsewhere the programs may catch SIGSEGV.
+
+	ncget should support a wider set of binary representations for
+        output (in particular, the integer ones ranging from int8_t and
+        uint8_t to int64_t and uint64_t should be supported, but also
+        long double.)  Please look at lib/numconv.c in the source for
+        the details.
+
+	The ncget command line options should generally match those
+	supported by the (yet to be released) Rawtools package.
+
+	There ought to be a more general ncput command.
+
+	Please report bugs to adir-devel@theory.asu.ru.
+
+BUGS ends here
