@@ -33,7 +33,7 @@ ncattput_hdf_LDADD = $(LIBS_HDF4)
 ncattget_hdf_CPPFLAGS = $(CPPFLAGS_HDF4)
 ncattput_hdf_CPPFLAGS = $(CPPFLAGS_HDF4)
 
-ncget_SOURCES_1 = dump_array.c print_nc_info.c ncget.c ncsel.c
+ncget_SOURCES_1 = dump_array.c print_nc_info.c ncget.c ncget.h ncsel.c
 
 ncget_SOURCES = $(ncget_SOURCES_1)
 ncget_LDADD = $(LIBS_NCTOOLS_EXTRA) $(LIBS_NETCDF) $(LDADD)
