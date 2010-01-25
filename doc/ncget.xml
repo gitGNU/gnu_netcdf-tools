@@ -23,6 +23,10 @@
 
           <!ENTITY ncsection   "1">
 
+          <!ENTITY urlmcd43b4
+"ftp://e4ftl01u.ecs.nasa.gov/MODIS_Composites/MOTA/MCD43B4.005/">
+          <!ENTITY urlmcd43b4i "&urlmcd43b4;2009.06.02/">
+
           <!ENTITY
              % iso.num PUBLIC
              "ISO 8879:1986//ENTITIES Numeric and Special Graphic//EN//XML"
@@ -297,6 +301,86 @@
         </listitem>
       </varlistentry>
     </variablelist>
+  </refsect1>
+
+  <refsect1 xml:id="examples">
+    <title xml:id="examples.t"
+           >EXAMPLES</title>
+
+    <para>The BRDF-adjusted nadir reflectance database derived from the
+      Terra and Aqua satellites' MODIS sensor data (as available from
+      NASA) could be visualized as follows:
+      <!-- informalexample -->
+        <screen><prompt
+>$ </prompt><userinput><command
+>ncget-hdf</command> --raw \
+      MCD43B4.A2009153.h22v03.005.2009181051526.hdf \
+      Nadir_Reflectance_Band2 \
+      | <command>rawtopgm</command> -bpp 2 -littleendian \
+            -maxval 15999 1200 1200 \
+      &gt; nadir-reflectance-near-infrared.pgm </userinput></screen>
+      <!-- /informalexample --></para>
+
+    <para>To further enhance the image, consider applying the gamma
+      correction of the factor 1.6, like:
+      <!-- informalexample -->
+        <screen><prompt
+>$ </prompt><userinput><command
+>convert</command> -gamma 1.6 \
+      nadir-reflectance-near-infrared.pgm \
+      nadir-reflectance-near-infrared-gamma-1.6.png </userinput></screen>
+      <!-- /informalexample -->
+      In this example, the image is also converted to the more
+      space-efficient PNG format.</para>
+
+    <para>To get sensible results, the <option>-littleendian</option>
+      option to <command>rawtopgm</command> is to be used on and only on
+      the systems where the native byte order is the least significant
+      byte (LSB) first, such as the systems based on
+      <orgname class="corporation">Intel</orgname> x86-32 and x86-64
+      architecture processors.  This is due to
+      that <command>rawtopgm</command> assumes MSB-first data by
+      default, while <command>&ncgeth;</command> (while in the
+      &ldquo;raw&rdquo; mode) outputs the binary data as returned by
+      <citerefentry>
+        <refentrytitle>ncvarget</refentrytitle>
+        <manvolnum>3</manvolnum>
+      </citerefentry>, that is, in the native byte order.</para>
+
+    <para>The true-color image could be produced by combining the data
+      for the MODIS bands 1 (for red), 4 (for blue) and 3 (for green),
+      like:
+      <!-- informalexample -->
+        <screen><prompt
+>$ </prompt><userinput><command
+>for</command> i in 1 4 3 ; do
+      <command>ncget-hdf</command> --raw \
+          MCD43B4.A2009153.h22v03.005.2009181051526.hdf \
+          Nadir_Reflectance_Band"$i" \
+          | <command>rawtopgm</command> -bpp 2 -littleendian \
+                -maxval 15999 1200 1200 \
+          &gt; nadir-reflectance-"$i".pgm
+      <command>done</command> </userinput>
+<prompt
+>$ </prompt><userinput><command
+>rgb3toppm</command> \
+      nadir-reflectance-1.pgm \
+      nadir-reflectance-4.pgm \
+      nadir-reflectance-3.pgm \
+      &gt; nadir-reflectance-1-4-3.ppm </userinput>
+<prompt
+>$ </prompt>
+</screen>
+      <!-- /informalexample --></para>
+
+    <para>The files used in this example are available from
+      <link xlink:href="&urlmcd43b4;" />.
+      The <command>rawtopgm</command> and <command>rgb3toppm</command>
+      commands are from the <package>NetPBM</package> package.
+      The <command>convert</command> command of
+      the <package>ImageMagick</package> package provides similar
+      functions.</para>
+
   </refsect1>
 
   <refsect1 xml:id="bugs">
