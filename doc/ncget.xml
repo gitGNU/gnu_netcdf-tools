@@ -23,9 +23,19 @@
 
           <!ENTITY ncsection   "1">
 
+          <!ENTITY urlhdfgroup
+                   "http://www.hdfgroup.org/">
+          <!ENTITY urlimagemagick
+                   "http://www.imagemagick.org/">
           <!ENTITY urlmcd43b4
 "ftp://e4ftl01u.ecs.nasa.gov/MODIS_Composites/MOTA/MCD43B4.005/">
           <!ENTITY urlmcd43b4i "&urlmcd43b4;2009.06.02/">
+          <!ENTITY urlnetcdf
+                   "http://www.unidata.ucar.edu/software/netcdf/">
+          <!ENTITY urlnetpbm
+                   "http://netpbm.sourceforge.net/">
+          <!ENTITY urlwist
+                   "https://wist.echo.nasa.gov/">
 
           <!ENTITY
              % iso.num PUBLIC
@@ -440,5 +450,33 @@
           <manvolnum>2</manvolnum>
         </citerefentry></member>
     </simplelist>
+
+    <para>For further information about NetCDF and HDF4, please take a
+      look at:
+      <itemizedlist>
+        <listitem><simpara
+                     ><link xlink:href="&urlnetcdf;"
+                            /></simpara></listitem>
+        <listitem><simpara
+                     ><link xlink:href="&urlhdfgroup;"
+                            /></simpara></listitem>
+      </itemizedlist></para>
+
+    <para>Also of interest may be:
+      <itemizedlist>
+        <listitem><simpara
+                     ><link
+                         xlink:href="&urlnetpbm;"
+                         /></simpara></listitem>
+        <listitem><simpara
+                     ><link
+                         xlink:href="&urlimagemagick;"
+                         /></simpara></listitem>
+      </itemizedlist></para>
+
+    <para>The NASA geospatial data archive could be searched using the
+      Warehouse Inventory Search Tool (WIST)
+      at <link xlink:href="&urlwist;" />.</para>
+
   </refsect1>
 </refentry>
