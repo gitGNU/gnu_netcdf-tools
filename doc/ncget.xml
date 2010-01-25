@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<?xml-stylesheet
+   type="text/xsl"
+   href="http://docbook.sourceforge.net/release/xsl-ns/current/manpages/docbook.xsl"
+   ?>
+<!-- Based on the foo.1.example_manpage.xml.gz example -->
+<!DOCTYPE refentry
+          PUBLIC "-//OASIS//DTD DocBook XML 5.0//EN"
+          "http://www.oasis-open.org/docbook/xml/5.0/dtd/docbook.dtd" [
+          <!ENTITY ncfirstname "Ivan">
+          <!ENTITY ncsurname   "Shmakov">
+          <!ENTITY ncemail     "ivan@theory.asu.ru">
+          <!ENTITY ncfullname  "&ncfirstname; &ncsurname;">
+          <!ENTITY ncbugemail  "adir-devel@theory.asu.ru">
+
+          <!ENTITY ncget       "ncget">
+          <!ENTITY ncgeth      "&ncget;-hdf">
+          <!ENTITY ncucpackage "NETCDF TOOLS">
+          <!ENTITY ncpackage   "NetCDF tools">
+          <!ENTITY ncrelease   "0.1">
+          <!ENTITY nctitle     "&ncpackage;">
+          <!ENTITY ncproduct   "&ncpackage;">
+
+          <!ENTITY ncsection   "1">
+
+          <!ENTITY
+             % iso.num PUBLIC
+             "ISO 8879:1986//ENTITIES Numeric and Special Graphic//EN//XML"
+             "ISOnum.ent">
+          <!ENTITY
+             % iso.pub PUBLIC
+             "ISO 8879:1986//ENTITIES Publishing//EN//XML"
+             "ISOpub.ent">
+          %iso.num;
+          %iso.pub;
+          ]>
+<refentry xmlns="http://docbook.org/ns/docbook"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          version="5.0"
+          xml:lang="en">
+  <!-- also consider:
+       xmlns:m="http://www.w3.org/1998/Math/MathML"
+    -->
+
+  <info>
+    <!-- <title>&nctitle;</title> -->
+    <productname>&ncproduct;</productname>
+    <releaseinfo role="version">&ncrelease;</releaseinfo>
+    <!-- authorgroup -->
+      <author>
+        <personname>
+          <firstname>&ncfirstname;</firstname>
+          <surname>&ncsurname;</surname>
+        </personname>
+        <address>
+          <email>&ncemail;</email>
+        </address>
+        <contrib>Original author.</contrib>
+      </author>
+    <!-- /authorgroup -->
+    <copyright>
+      <year>2010</year>
+      <holder>&ncfullname;</holder>
+    </copyright>
+    <legalnotice>
+      <para>Permission is granted to copy, distribute and/or modify this
+	document under the terms of the GNU Free Documentation License,
+	Version 1.3 or any later version published by the Free Software
+	Foundation; with no Invariant Sections, no Front-Cover Texts,
+	and no Back-Cover Texts.</para>
+    </legalnotice>
+  </info>
+
+  <refmeta>
+    <refentrytitle>&ncget;</refentrytitle>
+    <refmiscinfo class="manual">&ncpackage;</refmiscinfo>
+    <manvolnum>&ncsection;</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>&ncget;</refname>
+    <refname>&ncgeth;</refname>
+    <refpurpose>write information obtained from a NetCDF file to
+      stdout</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>&ncget;</command>
+      <arg choice="opt" rep="repeat"
+	   ><replaceable>OPTION</replaceable></arg>
+      <arg choice="plain"
+           ><replaceable>FILE</replaceable></arg>
+      <group choice="plain">
+        <arg choice="plain"
+             ><replaceable>VARIABLE</replaceable></arg>
+        <arg choice="plain"
+             ><replaceable
+                 >VARIABLE</replaceable
+                             >:<replaceable
+                                  >ATTRIBUTE</replaceable></arg>
+        <arg choice="plain"
+             >:<replaceable>ATTRIBUTE</replaceable></arg>
+      </group>
+      <arg choice="opt"
+           ><replaceable>SUBSET</replaceable>
+      </arg>
+    </cmdsynopsis>
+
+    <cmdsynopsis>
+      <command>&ncgeth;</command>
+      <arg choice="opt" rep="repeat"
+	   ><replaceable>OPTION</replaceable></arg>
+      <arg choice="plain"
+           ><replaceable>FILE</replaceable></arg>
+      <group choice="plain">
+        <arg choice="plain"
+             ><replaceable>VARIABLE</replaceable></arg>
+        <arg choice="plain"
+             ><replaceable
+                 >VARIABLE</replaceable
+                             >:<replaceable
+                                  >ATTRIBUTE</replaceable></arg>
+        <arg choice="plain"
+             >:<replaceable>ATTRIBUTE</replaceable></arg>
+      </group>
+      <arg choice="opt"
+           ><replaceable>SUBSET</replaceable>
+      </arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1 xml:id="description">
+    <title xml:id="description.t"
+           >DESCRIPTION</title>
+
+    <para>The <command>&ncget;</command> command has several modes of
+      operation.  Namely:
+      <itemizedlist>
+        <listitem><simpara>the content of the specified variable or
+            attribute is read from the specified NetCDF file and written
+            in the chosen representation to standard output;
+        </simpara></listitem>
+        <listitem><simpara>with <option>--shape</option>
+            (<option>-S</option>), the <firstterm>shape</firstterm> of
+            the specified variable or attribute written to standard
+            output in the text (<acronym>ASCII</acronym>) form;
+        </simpara></listitem>
+        <listitem><simpara>with <option>--info</option>
+            (<option>-i</option>), some generic information (type, name
+            and dimensions) about the specified attribute or the
+            specified variable and its attributes is printed to standard
+            output in a human-readable form.
+        </simpara></listitem>
+      </itemizedlist>
+    </para>
+
+    <para>When printing the contents (unless the <option>--raw</option>
+      option is also given), the <literal>add_offset</literal>
+      and <literal>scale_factor</literal> attributes are taken into
+      account.  If it's not desired (for example, sometimes these
+      attributes are filled in the ways that contradict the established
+      convention), the <option>--override-addoffset</option>
+      and <option>--override-scalefactor</option> options may be used to
+      specify the desired values for the linear transformation.</para>
+
+    <para>In particular, using scale factor <literal>1</literal> and
+      offset <literal>0</literal> will effectively disable the
+      transformation.</para>
+
+    <para>The <command>&ncgeth;</command> command provides the same
+      functionality for HDF4 files.</para>
+  </refsect1>
+
+  <refsect1 xml:id="options">
+    <title>OPTIONS</title>
+    <variablelist>
+
+      <!-- Output format selection -->
+      <varlistentry>
+        <term><option>--double</option></term>
+        <listitem>
+          <para>Select C <literal>double</literal> binary representation
+            for output.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-f</option></term>
+        <term><option>--float32</option></term>
+        <listitem>
+          <para>Select C <literal>float</literal> binary representation
+            for output.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-R</option></term>
+        <term><option>--raw</option></term>
+        <listitem>
+          <para>Select &ldquo;raw&rdquo; binary representation for
+            output.  The output will contain the unaltered binary vector
+            as returned by
+            <citerefentry>
+              <refentrytitle>ncvarget</refentrytitle>
+              <manvolnum>3</manvolnum>
+            </citerefentry>.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-T</option></term>
+        <term><option>--text</option></term>
+        <listitem>
+          <para>Select plain text (<acronym>ASCII</acronym>)
+            representation for output.  The output will consist of a
+            single row of the numeric values.</para>
+        </listitem>
+      </varlistentry>
+
+      <!-- Mode selection -->
+      <varlistentry>
+        <term><option>-i</option></term>
+        <term><option>--info</option></term>
+        <listitem>
+          <para>Print some information about the attribute or the
+            variable and its attributes in a human-readable form.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-S</option></term>
+        <term><option>--shape</option></term>
+        <listitem>
+          <para>Print (in plain text format)
+            the <glossterm>shape</glossterm> of the variable or
+            attribute instead of its contents.  The shape is written as
+            a sequence of dimensions, the major one first, delimited by
+            whitespace.</para>
+        </listitem>
+      </varlistentry>
+
+      <!-- Miscellaneous -->
+      <varlistentry>
+        <term><option>-a</option></term>
+        <term><option>--override-addoffset</option>=<replaceable
+>ADDOFFSET</replaceable></term>
+        <listitem>
+          <para>Override the <literal>add_offset</literal> attribute
+            value, or supply it if there weren't one.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-m</option></term>
+        <term><option>--multiply</option>=<replaceable
+>MULTIPLIER</replaceable></term>
+        <listitem>
+          <para>After performing the linear transformation as specified
+            by the <literal>add_offset</literal>
+            and <literal>scale_factor</literal> attributes, multiply
+            each element by the value given.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-o</option></term>
+        <term><option>--output</option>=<replaceable
+                                           >FILE</replaceable></term>
+        <listitem>
+          <para>Output the result to this file instead of standard
+            output.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-s</option></term>
+        <term><option>--override-scalefactor</option></term>
+        <listitem>
+          <para>Override the <literal>scale_factor</literal> attribute
+            value, or supply it if there weren't one.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <!-- Common options -->
+      <varlistentry>
+        <term><option>--help</option></term>
+        <listitem>
+          <para>Print a verbose usage message, then exit
+            successfully.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--usage</option></term>
+        <listitem>
+          <para>Print a terse usage message, then exit
+            successfully.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--version</option></term>
+        <listitem>
+          <para>Print the version, then exit successfully.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+
+  <refsect1 xml:id="bugs">
+    <title xml:id="bugs.t"
+           >BUGS</title>
+
+    <para>When the output format is set to
+      either <literal>float</literal> or <literal>double</literal>, the
+      programs are subject to the <literal>RLIMIT_STACK</literal>
+      resource limit.  Please ensure that the programs are run within an
+      environment with this limit set high enough.  Elsewhere the
+      programs may catch <literal>SIGSEGV</literal>.
+    </para>
+
+    <para>The commands should support more binary representations for
+      output (in particular, the integer ones ranging from
+      <literal>int8_t</literal> and <literal>uint8_t</literal>
+      to
+      <literal>int64_t</literal> and <literal>uint64_t</literal>
+      should be supported, but also <literal>long double</literal>.)
+      Please look at <filename>lib/numconv.c</filename> in the
+      source for the details.</para>
+
+    <para>The command line options should match those supported by
+      Rawtools.</para>
+
+    <para>Please report bugs to
+      <email>&ncbugemail;</email>.</para>
+  </refsect1>
+
+  <refsect1 xml:id="see-also">
+    <title xml:id="see-also.t"
+           >SEE ALSO</title>
+
+    <!-- please keep sorted alphabetically -->
+    <!-- FIXME: what's up with simplelist here? -->
+    <simplelist type="inline">
+      <member><citerefentry>
+          <refentrytitle>ncattget</refentrytitle>
+          <manvolnum>3</manvolnum>
+        </citerefentry></member>
+      <member><citerefentry>
+          <refentrytitle>ncvarget</refentrytitle>
+          <manvolnum>3</manvolnum>
+        </citerefentry></member>
+      <member><citerefentry>
+          <refentrytitle>ncattput</refentrytitle>
+          <manvolnum>1</manvolnum>
+        </citerefentry></member>
+      <member><citerefentry>
+          <refentrytitle>setrlimit</refentrytitle>
+          <manvolnum>2</manvolnum>
+        </citerefentry></member>
+    </simplelist>
+  </refsect1>
+</refentry>

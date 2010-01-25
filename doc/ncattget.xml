@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<?xml-stylesheet
+   type="text/xsl"
+   href="http://docbook.sourceforge.net/release/xsl-ns/current/manpages/docbook.xsl"
+   ?>
+<!-- Based on the foo.1.example_manpage.xml.gz example -->
+<!DOCTYPE refentry
+          PUBLIC "-//OASIS//DTD DocBook XML 5.0//EN"
+          "http://www.oasis-open.org/docbook/xml/5.0/dtd/docbook.dtd" [
+          <!ENTITY ncfirstname "Ivan">
+          <!ENTITY ncsurname   "Shmakov">
+          <!ENTITY ncemail     "ivan@theory.asu.ru">
+          <!ENTITY ncfullname  "&ncfirstname; &ncsurname;">
+          <!ENTITY ncbugemail  "adir-devel@theory.asu.ru">
+
+          <!ENTITY ncattget    "ncattget">
+          <!ENTITY ncattgeth   "&ncattget;-hdf">
+          <!ENTITY ncucpackage "NETCDF TOOLS">
+          <!ENTITY ncpackage   "NetCDF tools">
+          <!ENTITY ncrelease   "0.1">
+          <!ENTITY nctitle     "&ncpackage;">
+          <!ENTITY ncproduct   "&ncpackage;">
+
+          <!ENTITY ncsection   "1">
+          ]>
+<refentry xmlns="http://docbook.org/ns/docbook"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          version="5.0"
+          xml:lang="en">
+  <!-- also consider:
+       xmlns:m="http://www.w3.org/1998/Math/MathML"
+    -->
+
+  <info>
+    <!-- <title>&nctitle;</title> -->
+    <productname>&ncproduct;</productname>
+    <releaseinfo role="version">&ncrelease;</releaseinfo>
+    <!-- authorgroup -->
+      <author>
+        <personname>
+          <firstname>&ncfirstname;</firstname>
+          <surname>&ncsurname;</surname>
+        </personname>
+        <address>
+          <email>&ncemail;</email>
+        </address>
+        <contrib>Original author.</contrib>
+      </author>
+    <!-- /authorgroup -->
+    <legalnotice>
+      <para>This manual page is in the public domain.</para>
+    </legalnotice>
+  </info>
+
+  <refmeta>
+    <refentrytitle>&ncattget;</refentrytitle>
+    <refmiscinfo class="manual">&ncpackage;</refmiscinfo>
+    <manvolnum>&ncsection;</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>&ncattget;</refname>
+    <refname>&ncattgeth;</refname>
+    <refpurpose>read NetCDF or HDF4 attribute value and write it to
+      stdout</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>&ncattget;</command>
+      <arg choice="plain"
+           ><replaceable>FILE</replaceable></arg>
+      <arg choice="plain"
+           ><replaceable>VARIABLE</replaceable></arg>
+      <arg choice="plain"
+           ><replaceable>ATTRIBUTE</replaceable></arg>
+    </cmdsynopsis>
+
+    <cmdsynopsis>
+      <command>&ncattgeth;</command>
+      <arg choice="plain"
+           ><replaceable>FILE</replaceable></arg>
+      <arg choice="plain"
+           ><replaceable>VARIABLE</replaceable></arg>
+      <arg choice="plain"
+           ><replaceable>ATTRIBUTE</replaceable></arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1 xml:id="description">
+    <title xml:id="description.t"
+           >DESCRIPTION</title>
+
+    <para><command>&ncattget;</command> reads the contents of the
+      specified attribute of the specified NetCDF variable stored in the
+      specified NetCDF file and writes it to standard output.
+      Global attribute is assumed in case the variable is specified as
+      an empty string.</para>
+
+    <para>The <command>&ncattgeth;</command> command does the same for
+      HDF4 files.</para>
+  </refsect1>
+
+  <refsect1 xml:id="bugs">
+    <title xml:id="bugs.t"
+           >BUGS</title>
+
+    <para>This command is superseded by the more
+      general
+      <citerefentry>
+        <refentrytitle>ncget</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>
+      command.</para>
+
+    <para>Please report bugs to
+      <email>&ncbugemail;</email>.</para>
+  </refsect1>
+
+  <refsect1 xml:id="see-also">
+    <title xml:id="see-also.t"
+           >SEE ALSO</title>
+
+    <!-- please keep sorted alphabetically -->
+    <!-- FIXME: what's up with simplelist here? -->
+    <simplelist type="inline">
+      <member><citerefentry>
+          <refentrytitle>ncattget</refentrytitle>
+          <manvolnum>3</manvolnum>
+        </citerefentry></member>
+      <member><citerefentry>
+          <refentrytitle>ncattput</refentrytitle>
+          <manvolnum>1</manvolnum>
+        </citerefentry></member>
+      <member><citerefentry>
+          <refentrytitle>ncget</refentrytitle>
+          <manvolnum>1</manvolnum>
+        </citerefentry></member>
+    </simplelist>
+  </refsect1>
+</refentry>
