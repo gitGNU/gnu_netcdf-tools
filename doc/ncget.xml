@@ -307,11 +307,16 @@
       either <literal>float</literal> or <literal>double</literal>, the
       programs are subject to the <literal>RLIMIT_STACK</literal>
       resource limit.  Please ensure that the programs are run within an
-      environment with this limit set high enough.  Elsewhere the
+      environment with this limit set high enough to contain the whole
+      set of data requested in the target (that
+      is, <literal>float</literal> or <literal>double</literal>)
+      representation.
+      Elsewhere the
       programs may catch <literal>SIGSEGV</literal>.
     </para>
 
-    <para>The commands should support more binary representations for
+    <para>The commands should support a wider set of binary
+      representations for
       output (in particular, the integer ones ranging from
       <literal>int8_t</literal> and <literal>uint8_t</literal>
       to
