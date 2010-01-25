@@ -1,7 +1,7 @@
 ### configure.ac  -*- Autoconf -*-
 
 AC_PREREQ(2.59)
-AC_INIT([NetCDF tools], [0.0.1], [ivan@main.uusia.org])
+AC_INIT([NetCDF tools], [0.1-rc1], [adir-devel@theory.asu.ru])
 AC_CONFIG_SRCDIR([src/ncget.c])
 AC_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE([foreign])
