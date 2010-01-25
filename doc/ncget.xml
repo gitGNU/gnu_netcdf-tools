@@ -80,7 +80,7 @@
   <refnamediv>
     <refname>&ncget;</refname>
     <refname>&ncgeth;</refname>
-    <refpurpose>write information obtained from a NetCDF file to
+    <refpurpose>write information obtained from a NetCDF or HDF4 file to
       stdout</refpurpose>
   </refnamediv>
 
@@ -162,9 +162,8 @@
       attributes are filled in the ways that contradict the established
       convention), the <option>--override-addoffset</option>
       and <option>--override-scalefactor</option> options may be used to
-      specify the desired values for the linear transformation.</para>
-
-    <para>In particular, using scale factor <literal>1</literal> and
+      specify the desired values for the linear transformation.
+      In particular, using scale factor <literal>1</literal> and
       offset <literal>0</literal> will effectively disable the
       transformation.</para>
 
